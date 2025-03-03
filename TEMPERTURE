@@ -1,0 +1,62 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <DHT.h>
+
+// I2C LCD Setup
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+// DHT Sensor and Buzzer
+#define DHTPIN 2          
+#define DHTTYPE DHT11     
+#define BUZZER 8          
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+    pinMode(BUZZER, OUTPUT);
+    Serial.begin(9600);
+    dht.begin();
+
+    // Initialize LCD Display
+    lcd.init();
+    lcd.backlight();
+
+    // Display Initializing Message
+    lcd.setCursor(0, 0);
+    lcd.print("Initializing...");
+    delay(2000);
+    lcd.clear();
+}
+
+void loop() {
+    // Simulated temperature and humidity (Modify these values for testing)
+    float temperature = 50.0;  
+    float humidity = 50.0;     
+
+    // Print to Serial Monitor
+    Serial.print("Temperature: ");
+    Serial.print(temperature);
+    Serial.print(" C  |  Humidity: ");
+    Serial.print(humidity);
+    Serial.println(" %");
+
+    // Display on LCD
+    lcd.setCursor(0, 0);
+    lcd.print("Temp: ");
+    lcd.print(temperature);
+    lcd.print(" C");
+
+    lcd.setCursor(0, 1);
+    lcd.print("Hum: ");
+    lcd.print(humidity);
+    lcd.print(" %");
+
+    // Buzzer activation if temperature > 30°C
+    if (temperature > 30.0) {  
+        digitalWrite(BUZZER, HIGH);
+        delay(500);
+        digitalWrite(BUZZER, LOW);
+    }
+
+    delay(2000);  // 2-second delay between updates
+}
